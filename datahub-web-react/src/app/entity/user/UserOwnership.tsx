@@ -27,11 +27,19 @@ const ListItem = styled.div`
 export default ({ ownerships, entityPath }: Props) => {
     const entityRegistry = useEntityRegistry();
 
-    const entityType = entityRegistry.getTypeFromPathName(entityPath || '');
+    // Switched from const to let *temporary?
+    let entityType = entityRegistry.getTypeFromPathName(entityPath || '');
 
-    if (!entityType) return null;
+    // Need to check what getTypeFromPathName does, seems to return some sort of nonstring object. Entitytype can not be set as a string. 
 
+    // if (!entityType) return null;
+    if (!entityType) {
+        entityType = Object.keys(ownerships)[0];
+    }
     const entitiesToShow = ownerships[entityType] || [];
+    console.log(ownerships);
+    console.log(entityType);
+    // console.log(entitiesToShow);
 
     return (
         <ListContainer>
