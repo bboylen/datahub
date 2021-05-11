@@ -39,6 +39,7 @@ export const DatasetProfile = ({ urn }: { urn: string }): JSX.Element => {
     const user = useGetAuthenticatedUser();
     const [updateDataset] = useUpdateDatasetMutation({
         update(cache, { data: newDataset }) {
+            console.log(newDataset);
             cache.modify({
                 fields: {
                     dataset() {

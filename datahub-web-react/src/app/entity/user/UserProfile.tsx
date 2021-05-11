@@ -1,6 +1,9 @@
 import { Divider, Alert } from 'antd';
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import styled from 'styled-components';
+
+import { useApolloClient } from '@apollo/client';
+import { GetDatasetDocument } from '../../../graphql/dataset.generated';
 
 import UserHeader from './UserHeader';
 import UserDetails from './UserDetails';
@@ -28,6 +31,13 @@ export default function UserProfile() {
         query: `owners:${username}`,
     });
 
+    useEffect(() => {
+        ownershipResult = useGetAllEntitySearchResults({
+            query: `owners:${username}`,
+        });
+    })
+
+    const client = useApolloClient();
     const contentLoading =
         Object.keys(ownershipResult).some((type) => {
             return ownershipResult[type].loading;
@@ -45,6 +55,15 @@ export default function UserProfile() {
         });
         return ownershipResult;
     }, [ownershipResult]);
+
+    console.log(
+        client.readQuery({
+            query: GetDatasetDocument,
+            variables: {
+                urn: 'urn:li:dataset:(urn:li:dataPlatform:hive,fct_users_created,PROD)',
+            },
+        }),
+    );
 
     if (error || (!loading && !error && !data)) {
         return <Alert type="error" message={error?.message || 'Entity failed to load'} />;
